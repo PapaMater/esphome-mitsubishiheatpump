@@ -1,6 +1,6 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
-from esphome.components import climate
+from esphome.components import climate, select
 from esphome.components.logger import HARDWARE_UART_TO_SERIAL
 from esphome.const import (
     CONF_ID,
@@ -13,12 +13,16 @@ from esphome.const import (
 )
 from esphome.core import CORE, coroutine
 
-AUTO_LOAD = ["climate"]
+AUTO_LOAD = ["climate", "select"]
 
 CONF_SUPPORTS = "supports"
+CONF_HORIZONTAL_SWING_SELECT = "horizontal_vane_select"
+CONF_VERTICAL_SWING_SELECT = "vertical_vane_select"
 DEFAULT_CLIMATE_MODES = ["HEAT_COOL", "COOL", "HEAT", "DRY", "FAN_ONLY"]
 DEFAULT_FAN_MODES = ["AUTO", "DIFFUSE", "LOW", "MEDIUM", "MIDDLE", "HIGH"]
 DEFAULT_SWING_MODES = ["OFF", "VERTICAL"]
+HORIZONTAL_SWING_OPTIONS = ["AUTO", "SWING", "FAR_LEFT", "CENTER_LEFT", "CENTER", "CENTER_RIGHT", "FAR_RIGHT"]
+VERTICAL_SWING_OPTIONS = ["AUTO", "SWING", "CIELING", "HIGH", "MIDDLE", "LOW", "FLOOR"]
 
 MitsubishiHeatPump = cg.global_ns.class_(
     "MitsubishiHeatPump", climate.Climate, cg.PollingComponent
