@@ -36,6 +36,8 @@ The whole integration with this libary and the underlying HeatPump has been
 tested by the author on the following units:
 * `MSZ-GL06NA`
 * `MFZ-KA09NA`
+* `MSZ-FH35V`
+* `MSZ-LN35VG2W`
 
 ## Usage
 ### Step 1: Build a control circuit.
@@ -62,7 +64,7 @@ Add this repository to your ESPHome config:
 
 ```yaml
 external_components:
-  - source: github://geoffdavis/esphome-mitsubishiheatpump
+  - source: github://PapaMater/esphome-mitsubishiheatpump
 ```
 
 #### Step 3a: Upgrading from 1.x releases
@@ -215,11 +217,16 @@ sensor:
     update_interval: 60s
 
 external_components:
-  - source: github://geoffdavis/esphome-mitsubishiheatpump
+  - source: github://PapaMater/esphome-mitsubishiheatpump
 
 climate:
   - platform: mitsubishi_heatpump
     name: "${friendly_name}"
+
+    horizontal_vane_select:
+      name: Horizontal Vane
+    vertical_vane_select:
+      name: Vertical Vane
 
     # ESP32 only - change UART0 to UART1 or UART2 and remove the
     # logging:baud_rate above to allow the built-in UART0 to function for
@@ -242,7 +249,7 @@ climate:
     supports:
       mode: [HEAT_COOL, COOL, HEAT, FAN_ONLY]
       fan_mode: [AUTO, LOW, MEDIUM, HIGH]
-      swing_mode: [OFF, VERTICAL]
+      swing_mode: [OFF, VERTICAL, HORIZONTAL, BOTH]
     visual:
       min_temperature: 16
       max_temperature: 31
