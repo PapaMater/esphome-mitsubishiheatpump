@@ -28,6 +28,9 @@ MitsubishiHeatPump = cg.global_ns.class_(
     "MitsubishiHeatPump", climate.Climate, cg.PollingComponent
 )
 
+MitsubishiACSelect = cg.global_ns.class_(
+    "MitsubishiACSelect", select.Select, cg.Component
+)
 
 def valid_uart(uart):
     if CORE.is_esp8266:
@@ -39,6 +42,9 @@ def valid_uart(uart):
 
     return cv.one_of(*uarts, upper=True)(uart)
 
+SELECT_SCHEMA = select.SELECT_SCHEMA.extend(
+    {cv.GenerateID(CONF_ID): cv.declare_id(MitsubishiACSelect)}
+)
 
 CONFIG_SCHEMA = climate.CLIMATE_SCHEMA.extend(
     {
@@ -50,6 +56,9 @@ CONFIG_SCHEMA = climate.CLIMATE_SCHEMA.extend(
         cv.Optional(CONF_UPDATE_INTERVAL, default="500ms"): cv.All(
             cv.update_interval, cv.Range(max=cv.TimePeriod(milliseconds=9000))
         ),
+       # Add selects for vertical and horizontal vane positions
+       cv.Optional(CONF_HORIZONTAL_SWING_SELECT): SELECT_SCHEMA,
+       cv.Optional(CONF_VERTICAL_SWING_SELECT): SELECT_SCHEMA,
         # Optionally override the supported ClimateTraits.
         cv.Optional(CONF_SUPPORTS, default={}): cv.Schema(
             {
@@ -88,7 +97,18 @@ def to_code(config):
         cg.add(traits.add_supported_swing_mode(
             climate.CLIMATE_SWING_MODES[mode]
         ))
+    if CONF_HORIZONTAL_SWING_SELECT in config:
+        conf = config[CONF_HORIZONTAL_SWING_SELECT]
+        swing_select = yield select.new_select(conf, options=HORIZONTAL_SWING_OPTIONS)
+        yield cg.register_component(swing_select, conf)
+        cg.add(var.set_horizontal_vane_select(swing_select))
 
+    if CONF_VERTICAL_SWING_SELECT in config:
+        conf = config[CONF_VERTICAL_SWING_SELECT]
+        swing_select = yield select.new_select(conf, options=VERTICAL_SWING_OPTIONS)
+        yield cg.register_component(swing_select, conf)
+        cg.add(var.set_vertical_vane_select(swing_select))
+    
     yield cg.register_component(var, config)
     yield climate.register_climate(var, config)
     cg.add_library(
