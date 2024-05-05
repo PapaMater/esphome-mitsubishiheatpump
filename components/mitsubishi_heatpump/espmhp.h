@@ -18,6 +18,7 @@
 #define USE_CALLBACKS
 
 #include "esphome.h"
+#include "esphome/components/select/select.h"
 #include "esphome/core/preferences.h"
 
 #include "HeatPump.h"
@@ -97,12 +98,21 @@ class MitsubishiHeatPump : public PollingComponent, public climate::Climate {
         // set_remote_temp(0) to switch back to the internal sensor.
         void set_remote_temperature(float);
 
+        void set_vertical_vane_select(esphome::select::Select *vertical_vane_select);
+        void set_horizontal_vane_select(esphome::select::Select *horizontal_vane_select);
+
     protected:
         // HeatPump object using the underlying Arduino library.
         HeatPump* hp;
 
         // The ClimateTraits supported by this HeatPump.
         climate::ClimateTraits traits_;
+
+        // Vane position
+        void update_swing_horizontal(const std::string &swing);
+        void update_swing_vertical(const std::string &swing);
+        std::string vertical_swing_state_;
+        std::string horizontal_swing_state_;
 
         // Allow the HeatPump class to use get_hw_serial_
         friend class HeatPump;
@@ -128,6 +138,15 @@ class MitsubishiHeatPump : public PollingComponent, public climate::Climate {
 
         static void save(float value, ESPPreferenceObject& storage);
         static optional<float> load(ESPPreferenceObject& storage);
+
+        esphome::select::Select *vertical_vane_select_ =
+            nullptr;  // Select to store manual position of vertical swing
+        esphome::select::Select *horizontal_vane_select_ =
+            nullptr;  // Select to store manual position of horizontal swing
+
+        // When received command to change the vane positions
+        void on_horizontal_swing_change(const std::string &swing);
+        void on_vertical_swing_change(const std::string &swing);
 
     private:
         // Retrieve the HardwareSerial pointer from friend and subclasses.
