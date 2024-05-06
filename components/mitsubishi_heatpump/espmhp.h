@@ -137,7 +137,7 @@ class MitsubishiHeatPump : public PollingComponent, public climate::Climate {
         optional<float> auto_setpoint;
 
         static void save(float value, ESPPreferenceObject& storage);
-        static optional<float> load(ESPPreferenceObject& storage);
+        static esphome::optional<float> load(esphome::ESPPreferenceObject& storage);
 
         esphome::select::Select *vertical_vane_select_ =
             nullptr;  // Select to store manual position of vertical swing
@@ -147,6 +147,8 @@ class MitsubishiHeatPump : public PollingComponent, public climate::Climate {
         // When received command to change the vane positions
         void on_horizontal_swing_change(const std::string &swing);
         void on_vertical_swing_change(const std::string &swing);
+
+        static void log_packet(byte* packet, unsigned int length, char* packetDirection);
 
     private:
         // Retrieve the HardwareSerial pointer from friend and subclasses.
