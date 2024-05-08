@@ -10,8 +10,6 @@ from esphome.const import (
     CONF_MODE,
     CONF_FAN_MODE,
     CONF_SWING_MODE,
-    CONF_VERTICAL_SWING_OPTIONS
-    CONF_HORIZONTAL_SWING_OPTIONS
 )
 from esphome.core import CORE, coroutine
 
