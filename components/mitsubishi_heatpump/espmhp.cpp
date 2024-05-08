@@ -138,10 +138,10 @@ void MitsubishiHeatPump::on_vertical_swing_change(const std::string &swing) {
     ESP_LOGD(TAG, "Setting vertical swing position");
     bool updated = false;
 
-    if (swing == "swing") {
+    if (swing == "SWING") {
         hp->setVaneSetting("SWING");
         updated = true;
-    } else if (swing == "auto") {
+    } else if (swing == "AUTO") {
         hp->setVaneSetting("AUTO");
         updated = true;
     } else if (swing == "CIELING") {
@@ -156,7 +156,7 @@ void MitsubishiHeatPump::on_vertical_swing_change(const std::string &swing) {
     } else if (swing == "LOW") {
         hp->setVaneSetting("4");
         updated = true;
-    } else if (swing == "CLOOR") {
+    } else if (swing == "FLOOR") {
         hp->setVaneSetting("5");
         updated = true;
     } else {
